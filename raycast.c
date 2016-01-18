@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 17:22:37 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/18 23:40:00 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/19 00:32:48 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ void	draw_line(double perpwalldist, int x, t_env *e)
 	int	lineheight;
 	int	drawstart;
 	int	drawend;
+	int	s;
 
+	s = 0;
 	lineheight = abs((int)(HEIGHT / perpwalldist));
 	drawstart = -lineheight / 2 + HEIGHT / 2;
 	if (drawstart < 0)
@@ -26,10 +28,15 @@ void	draw_line(double perpwalldist, int x, t_env *e)
 	if (drawend >= HEIGHT)
 		drawend = HEIGHT - 1;
 
-	while (drawstart <= drawend)
+	while (s < HEIGHT)
 	{
-		draw_dot(e, x, drawstart, 255);
-		drawstart++;
+		if (s < drawstart)
+			draw_dot(e, x, s, 150 + 150 * 256 + 150 * 256 * 256);
+		else if (s >= drawstart && s <= drawend)
+			draw_dot(e, x, s, 255);
+		else
+			draw_dot(e, x, s, 50 + 50 * 256 + 50 * 256 * 256);
+		s++;
 	}
 }
 
@@ -56,15 +63,11 @@ void	raycast(t_player *player, t_map *map, t_env *e)
 		raydir.x = player->dir->x + player->plane->x * camerax;
 		raydir.y = player->dir->y + player->plane->y * camerax;
 
-//		printf("[%f:%f]", raydir.x, raydir.y);
-
 		cmap.x = (int)raypos.x;
 		cmap.y = (int)raypos.y;
 
 		deltadist.x = sqrt(1 + (raydir.y * raydir.y) / (raydir.x * raydir.x));
 		deltadist.y = sqrt(1 + (raydir.x * raydir.x) / (raydir.y * raydir.y));
-
-//		printf("deltadist[%f:%f]", deltadist.x, deltadist.y);
 
 		hit = 0;
 		if (raydir.x < 0)
@@ -105,14 +108,13 @@ void	raycast(t_player *player, t_map *map, t_env *e)
 			if (map->wall[(int)cmap.x][(int)cmap.y] > 0)
 				hit = 1;
 		}
-//		printf("ray %d sidedist[%f:%f]\n", x, sidedist.x, sidedist.y);
 
 		if (side == 0)
 			perpwalldist = fabs((cmap.x - raypos.x + (1 - step.x) / 2) / raydir.x);
 		else
 			perpwalldist = fabs((cmap.y - raypos.y + (1 - step.y) / 2) / raydir.y);
 
-		printf("dist: %f", perpwalldist);
+		//printf("dist: %f", perpwalldist);
 		draw_line(perpwalldist, x, e);
 
 

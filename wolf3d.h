@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 15:02:25 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/18 23:52:25 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/19 00:32:50 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,14 @@
 # include "libft/libft.h"
 # include "minilibx/mlx.h"
 
-# define WIDTH 320
-# define HEIGHT 240
+# define WIDTH 800
+# define HEIGHT 600
+
+# define KEY_ESC 53
+# define KEY_UP 126
+# define KEY_DOWN 125
+# define KEY_LEFT 123
+# define KEY_RIGHT 124
 
 typedef struct	s_coord
 {

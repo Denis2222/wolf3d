@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 22:54:49 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/18 23:41:35 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/19 00:22:54 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,46 @@ int	expose_hook(t_env *e)
 
 int	key_hook(int keycode, t_env *e)
 {
-	(void)e;
-	ft_putnbr(keycode);
-	ft_putchar(' ');
+	double	movespeed;
+	double	rotspeed;
+
+	rotspeed = 0.1;
+	movespeed = 0.1;
+	if (keycode == KEY_UP)
+	{
+		if (e->map->wall[(int)(e->player->pos->x + e->player->dir->x * movespeed)][(int)e->player->pos->y] == 0)
+			e->player->pos->x += e->player->dir->x * movespeed;
+		if (e->map->wall[(int)e->player->pos->x][(int)(e->player->pos->y + e->player->dir->y * movespeed)] == 0)
+			e->player->pos->y += e->player->dir->y * movespeed;
+	}
+	if (keycode == KEY_DOWN)
+	{
+		if (e->map->wall[(int)(e->player->pos->x - e->player->dir->x * movespeed)][(int)e->player->pos->y] == 0)
+			e->player->pos->x -= e->player->dir->x * movespeed;
+		if (e->map->wall[(int)e->player->pos->x][(int)(e->player->pos->y - e->player->dir->y * movespeed)] == 0)
+			e->player->pos->y -= e->player->dir->y * movespeed;
+	}
+
+    if (keycode == KEY_LEFT)
+    {
+      double oldDirX = e->player->dir->x;
+      e->player->dir->x = e->player->dir->x * cos(-rotspeed) - e->player->dir->y * sin(-rotspeed);
+      e->player->dir->y = oldDirX * sin(-rotspeed) + e->player->dir->y * cos(-rotspeed);
+      double oldPlaneX = e->player->plane->x;
+      e->player->plane->x = e->player->plane->x * cos(-rotspeed) - e->player->plane->y * sin(-rotspeed);
+      e->player->plane->y = oldPlaneX * sin(-rotspeed) + e->player->plane->y * cos(-rotspeed);
+    }
+    if (keycode == KEY_RIGHT)
+    {
+      double oldDirX = e->player->dir->x;
+      e->player->dir->x = e->player->dir->x * cos(rotspeed) - e->player->dir->y * sin(rotspeed);
+      e->player->dir->y = oldDirX * sin(rotspeed) + e->player->dir->y * cos(rotspeed);
+      double oldPlaneX = e->player->plane->x;
+      e->player->plane->x = e->player->plane->x * cos(rotspeed) - e->player->plane->y * sin(rotspeed);
+      e->player->plane->y = oldPlaneX * sin(rotspeed) + e->player->plane->y * cos(rotspeed);
+    }
+
+	render(e);
 	return (0);
 }
 
