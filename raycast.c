@@ -6,13 +6,13 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 17:22:37 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/18 21:14:16 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/18 23:40:00 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
 
-void	draw_line(double perpwalldist)
+void	draw_line(double perpwalldist, int x, t_env *e)
 {
 	int	lineheight;
 	int	drawstart;
@@ -25,9 +25,15 @@ void	draw_line(double perpwalldist)
 	drawend = lineheight / 2 + HEIGHT / 2;
 	if (drawend >= HEIGHT)
 		drawend = HEIGHT - 1;
+
+	while (drawstart <= drawend)
+	{
+		draw_dot(e, x, drawstart, 255);
+		drawstart++;
+	}
 }
 
-void	raycast(t_player *player, t_map *map)
+void	raycast(t_player *player, t_map *map, t_env *e)
 {
 	int		x;
 	double	camerax;
@@ -50,7 +56,7 @@ void	raycast(t_player *player, t_map *map)
 		raydir.x = player->dir->x + player->plane->x * camerax;
 		raydir.y = player->dir->y + player->plane->y * camerax;
 
-		printf("[%f:%f]", raydir.x, raydir.y);
+//		printf("[%f:%f]", raydir.x, raydir.y);
 
 		cmap.x = (int)raypos.x;
 		cmap.y = (int)raypos.y;
@@ -106,7 +112,9 @@ void	raycast(t_player *player, t_map *map)
 		else
 			perpwalldist = fabs((cmap.y - raypos.y + (1 - step.y) / 2) / raydir.y);
 
-//		printf("dist: %f", perpwalldist);
+		printf("dist: %f", perpwalldist);
+		draw_line(perpwalldist, x, e);
+
 
 		x++;
 	}

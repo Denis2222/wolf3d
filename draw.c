@@ -1,29 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/01/18 15:03:39 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/18 23:52:24 by dmoureu-         ###   ########.fr       */
+/*   Created: 2016/01/18 23:23:52 by dmoureu-          #+#    #+#             */
+/*   Updated: 2016/01/18 23:27:20 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
 
-int	main(void)
+void	draw_dot(t_env *e, int x, int y, int color)
 {
-	t_map		*map;
-	t_list		*list;
-	t_player	*player;
+	char	b;
+	char	g;
+	char	r;
+	int		i;
 
-	list = read_file("./map/basic.w3d");
-	map = map_parse(list);
-	map_print(map);
-
-	player = newplayer(1.5, 1.5);
-
-	setup_mlx(player, map);
-	return (0);
+	b = color % 256;
+	g = (color / 256) % 256;
+	r = (color / 256 / 256) % 256;
+	i = (e->size_line * y) + (x * (e->bpp / 8));
+	e->imgpx[i] = b;
+	e->imgpx[i + 1] = g;
+	e->imgpx[i + 2] = r;
 }
