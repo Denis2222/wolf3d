@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 15:02:25 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/19 16:17:58 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/19 22:06:22 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,13 @@ typedef struct	s_player
 	t_coord		*plane;
 }				t_player;
 
+typedef struct	s_img
+{
+	int			width;
+	int			height;
+	char		*buffer;
+}				t_img;
+
 typedef struct	s_env
 {
 	void		*mlx;
@@ -58,7 +65,7 @@ typedef struct	s_env
 
 	t_map		*map;
 	t_player	*player;
-
+	t_img		*wall;
 }				t_env;
 
 typedef struct	s_raycast
@@ -91,7 +98,7 @@ void			map_print(t_map	*map);
 
 t_player		*newplayer(double x, double y);
 t_coord			*newcoord(double x, double y);
-void			raycast(t_map *map, t_env *e);
+void			raycast(t_env *e);
 
 void			draw_dot(t_env *e, int x, int y, int color);
 
