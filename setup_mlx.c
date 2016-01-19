@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 22:54:49 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/19 00:22:54 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/19 16:18:15 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	render(t_env *e)
 {
 	e->img = mlx_new_image(e->mlx, WIDTH, HEIGHT);
 	e->imgpx = mlx_get_data_addr(e->img, &(e->bpp), &(e->size_line), &(e->endian));
-	raycast(e->player, e->map, e);
+	raycast(e->map, e);
 	mlx_put_image_to_window(e->mlx, e->win, e->img, 0, 0);
 	mlx_destroy_image(e->mlx, e->img);
 }

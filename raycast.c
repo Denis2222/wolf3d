@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 17:22:37 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/19 14:55:17 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/19 16:25:29 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	draw_line(double perpwalldist, int x, t_env *e)
 	if (drawend >= HEIGHT)
 		drawend = HEIGHT - 1;
 
+	while (s < HEIGHT)
 	{
 		if (s < drawstart)
 			draw_dot(e, x, s, 150 + 150 * 256 + 150 * 256 * 256);
@@ -52,7 +53,31 @@ void	rayinit(t_env *e, t_raycast *rc, int x)
 	rc->deltadisty = sqrt(1 + (rc->raydirx * rc->raydirx) / (rc->raydiry * rc->raydiry));
 }
 
-void	raycast(t_player *toto, t_map *map, t_env *e)
+void	rayfindside(t_raycast *rc)
+{
+	if (rc->raydirx < 0)
+	{
+		rc->stepx = -1;
+		rc->sidedistx = (rc->rayposx - rc->mapx) * rc->deltadistx;
+	}
+	else
+	{
+		rc->stepx = 1;
+		rc->sidedistx = (rc->mapx + 1.0 - rc->rayposx) * rc->deltadistx;
+	}
+	if (rc->raydiry < 0)
+	{
+		rc->stepy = -1;
+		rc->sidedisty = (rc->rayposy - rc->mapy) * rc->deltadisty;
+	}
+	else
+	{
+		rc->stepy = 1;
+		rc->sidedisty = (rc->mapy + 1.0 - rc->rayposy) * rc->deltadisty;
+	}
+}
+
+void	raycast(t_map *map, t_env *e)
 {
 	t_raycast	rc;
 	int		x;
@@ -62,26 +87,7 @@ void	raycast(t_player *toto, t_map *map, t_env *e)
 	{
 		rayinit(e, &rc, x);
 		rc.hit = 0;
-		if (rc.raydirx < 0)
-		{
-			rc.stepx = -1;
-			rc.sidedistx = (rc.rayposx - rc.mapx) * rc.deltadistx;
-		}
-		else
-		{
-			rc.stepx = 1;
-			rc.sidedistx = (rc.mapx + 1.0 - rc.rayposx) * rc.deltadistx;
-		}
-		if (rc.raydiry < 0)
-		{
-			rc.stepy = -1;
-			rc.sidedisty = (rc.rayposy - rc.mapy) * rc.deltadisty;
-		}
-		else
-		{
-			rc.stepy = 1;
-			rc.sidedisty = (rc.mapy + 1.0 - rc.rayposy) * rc.deltadisty;
-		}
+		rayfindside(&rc);
 		while (rc.hit == 0)
 		{
 			if (rc.sidedistx < rc.sidedisty)

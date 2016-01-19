@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 15:02:25 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/19 14:56:01 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/19 16:17:58 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void			map_print(t_map	*map);
 
 t_player		*newplayer(double x, double y);
 t_coord			*newcoord(double x, double y);
-void			raycast(t_player *player, t_map *map, t_env *e);
+void			raycast(t_map *map, t_env *e);
 
 void			draw_dot(t_env *e, int x, int y, int color);
 
