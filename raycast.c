@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 17:22:37 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/19 00:32:48 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/19 14:55:17 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,96 +28,84 @@ void	draw_line(double perpwalldist, int x, t_env *e)
 	if (drawend >= HEIGHT)
 		drawend = HEIGHT - 1;
 
-	while (s < HEIGHT)
 	{
 		if (s < drawstart)
 			draw_dot(e, x, s, 150 + 150 * 256 + 150 * 256 * 256);
 		else if (s >= drawstart && s <= drawend)
 			draw_dot(e, x, s, 255);
 		else
-			draw_dot(e, x, s, 50 + 50 * 256 + 50 * 256 * 256);
+			draw_dot(e, x, s, 50 + 50 * 256 + 50 * 256 * 256); 
 		s++;
 	}
 }
 
-void	raycast(t_player *player, t_map *map, t_env *e)
+void	rayinit(t_env *e, t_raycast *rc, int x)
 {
+	rc->camerax = 2 * x / (double)(WIDTH) - 1;
+	rc->rayposx = e->player->pos->x;
+	rc->rayposy = e->player->pos->y;
+	rc->raydirx = e->player->dir->x + e->player->plane->x * rc->camerax;
+	rc->raydiry = e->player->dir->y + e->player->plane->y * rc->camerax;
+	rc->mapx = (int)rc->rayposx;
+	rc->mapy = (int)rc->rayposy;
+	rc->deltadistx = sqrt(1 + (rc->raydiry * rc->raydiry) / (rc->raydirx * rc->raydirx));
+	rc->deltadisty = sqrt(1 + (rc->raydirx * rc->raydirx) / (rc->raydiry * rc->raydiry));
+}
+
+void	raycast(t_player *toto, t_map *map, t_env *e)
+{
+	t_raycast	rc;
 	int		x;
-	double	camerax;
-	t_coord	raypos;
-	t_coord	raydir;
-	t_coord	cmap;
-	t_coord	sidedist;
-	t_coord	deltadist;
-	double	perpwalldist;
-	t_coord	step;
-	int		hit;
-	int		side;
 
 	x = 0;
 	while (x < WIDTH)
 	{
-		camerax = 2 * x / (double)(WIDTH) - 1;
-		raypos.x = player->pos->x;
-		raypos.y = player->pos->y;
-		raydir.x = player->dir->x + player->plane->x * camerax;
-		raydir.y = player->dir->y + player->plane->y * camerax;
-
-		cmap.x = (int)raypos.x;
-		cmap.y = (int)raypos.y;
-
-		deltadist.x = sqrt(1 + (raydir.y * raydir.y) / (raydir.x * raydir.x));
-		deltadist.y = sqrt(1 + (raydir.x * raydir.x) / (raydir.y * raydir.y));
-
-		hit = 0;
-		if (raydir.x < 0)
+		rayinit(e, &rc, x);
+		rc.hit = 0;
+		if (rc.raydirx < 0)
 		{
-			step.x = -1;
-			sidedist.x = (raypos.x - cmap.x) * deltadist.x;
+			rc.stepx = -1;
+			rc.sidedistx = (rc.rayposx - rc.mapx) * rc.deltadistx;
 		}
 		else
 		{
-			step.x = 1;
-			sidedist.x = (cmap.x + 1.0 - raypos.x) * deltadist.x;
+			rc.stepx = 1;
+			rc.sidedistx = (rc.mapx + 1.0 - rc.rayposx) * rc.deltadistx;
 		}
-		if (raydir.y < 0)
+		if (rc.raydiry < 0)
 		{
-			step.y = -1;
-			sidedist.y = (raypos.y - cmap.y) * deltadist.y;
+			rc.stepy = -1;
+			rc.sidedisty = (rc.rayposy - rc.mapy) * rc.deltadisty;
 		}
 		else
 		{
-			step.y = 1;
-			sidedist.y = (cmap.y + 1.0 - raypos.y) * deltadist.y;
+			rc.stepy = 1;
+			rc.sidedisty = (rc.mapy + 1.0 - rc.rayposy) * rc.deltadisty;
 		}
-
-		while (hit == 0)
+		while (rc.hit == 0)
 		{
-			if (sidedist.x < sidedist.y)
+			if (rc.sidedistx < rc.sidedisty)
 			{
-				sidedist.x += deltadist.x;
-				cmap.x += step.x;
-				side = 0;
+				rc.sidedistx += rc.deltadistx;
+				rc.mapx += rc.stepx;
+				rc.side = 0;
 			}
 			else
 			{
-				sidedist.y += deltadist.y;
-				cmap.y += step.y;
-				side = 1;
+				rc.sidedisty += rc.deltadisty;
+				rc.mapy += rc.stepy;
+				rc.side = 1;
 			}
-			if (map->wall[(int)cmap.x][(int)cmap.y] > 0)
-				hit = 1;
+			if (map->wall[(int)rc.mapx][(int)rc.mapy] > 0)
+				rc.hit = 1;
 		}
 
-		if (side == 0)
-			perpwalldist = fabs((cmap.x - raypos.x + (1 - step.x) / 2) / raydir.x);
+		if (rc.side == 0)
+			rc.perpwalldist = fabs((rc.mapx - rc.rayposx + (1 - rc.stepx) / 2) / rc.raydirx);
 		else
-			perpwalldist = fabs((cmap.y - raypos.y + (1 - step.y) / 2) / raydir.y);
-
+			rc.perpwalldist = fabs((rc.mapy - rc.rayposy + (1 - rc.stepy) / 2) / rc.raydiry);
 		//printf("dist: %f", perpwalldist);
-		draw_line(perpwalldist, x, e);
-
-
+		draw_line(rc.perpwalldist, x, e);
 		x++;
 	}
 }

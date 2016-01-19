@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 15:02:25 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/19 00:32:50 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/19 14:56:01 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 # include "libft/libft.h"
 # include "minilibx/mlx.h"
 
-# define WIDTH 800
-# define HEIGHT 600
+# define WIDTH 1024
+# define HEIGHT 800
 
 # define KEY_ESC 53
 # define KEY_UP 126
@@ -60,6 +60,26 @@ typedef struct	s_env
 	t_player	*player;
 
 }				t_env;
+
+typedef struct	s_raycast
+{
+	double		camerax;
+	double		rayposx;
+	double		rayposy;
+	double		raydirx;
+	double		raydiry;
+	double		mapx;
+	double		mapy;
+	double		sidedistx;
+	double		sidedisty;
+	double		deltadistx;
+	double		deltadisty;
+	double		stepx;
+	double		stepy;
+	double		perpwalldist;
+	int			hit;
+	int			side;
+}				t_raycast;
 
 void			setup_mlx(t_player *player, t_map *map);
 int				key_hook(int keycode, t_env *e);
