@@ -47,7 +47,7 @@ void	draw_ray(t_raycast *rc, int x, t_env *e)
 		{
 			d = ray.y * 256 - HEIGHT * 128 + ray.lineheight * 128;
 			ray.texy = ((d * 64) / ray.lineheight) / 256;
-			draw_dot(e, x, ray.y, getcolor(e->wall, ray.texx, ray.texy));
+			draw_dot(e, x, ray.y, getcolor(e->wall, ray.texx, ray.texy, rc->perpwalldist));
 			/* affichage par face de cube
 			if (rc->raydiry > 0 && rc->side)
 				draw_dot(e, x, s, 0xFF0000);

@@ -26,6 +26,14 @@
 # define KEY_LEFT 123
 # define KEY_RIGHT 124
 
+# define MOVESPEED 0.1
+# define ROTSPEED 0.1
+
+# define CR cos(ROTSPEED)
+# define SR sin(ROTSPEED)
+# define C_R cos(-ROTSPEED)
+# define S_R sin(-ROTSPEED)
+
 typedef struct	s_coord
 {
 	double		x;
@@ -114,6 +122,6 @@ void			raycast(t_env *e);
 
 void			draw_dot(t_env *e, int x, int y, int color);
 int				rgb2i(int r, int g, int b);
-int				getcolor(t_img *img, int x, int y);
+int				getcolor(t_img *img, int x, int y, int fade);
 
 #endif

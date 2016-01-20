@@ -38,14 +38,17 @@ void	draw_dot(t_env *e, int x, int y, int color)
 	e->imgpx[i + 2] = r;
 }
 
-int		getcolor(t_img *img, int x, int y)
+int		getcolor(t_img *img, int x, int y, int fade)
 {
 	int	color;
 	int	c;
 
+	fade /= 8;
 	c = (y * img->width + x) * 4;
 	color = img->buffer[c];
 	color += img->buffer[c + 1] * 256;
 	color += img->buffer[c + 2] * 256 * 256;
+	while (fade--)
+		color = ((color >> 1) & 8355711);
 	return (color);
 }

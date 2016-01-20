@@ -19,7 +19,7 @@ int	main(void)
 	t_player	*player;
 
 	setbuf(stdout, NULL);
-	list = read_file("./map/basic.w3d");
+	list = read_file("./map/lvl1.w3d");
 	map = map_parse(ft_lstrev(list));
 	map_print(map);
 
