@@ -17,8 +17,8 @@
 # include "libft/libft.h"
 # include "minilibx/mlx.h"
 
-# define WIDTH 320
-# define HEIGHT 240
+# define WIDTH 820
+# define HEIGHT 640
 
 # define KEY_ESC 53
 # define KEY_UP 126
@@ -88,6 +88,18 @@ typedef struct	s_raycast
 	int			side;
 }				t_raycast;
 
+typedef struct	s_ray
+{
+	int			lineheight;
+	int			drawstart;
+	int			drawend;
+	int			x;
+	int			y;
+	double		wallx;
+	int			texx;
+	int			texy;
+}				t_ray;
+
 void			setup_mlx(t_player *player, t_map *map);
 int				key_hook(int keycode, t_env *e);
 int				expose_hook(t_env *e);
@@ -101,5 +113,7 @@ t_coord			*newcoord(double x, double y);
 void			raycast(t_env *e);
 
 void			draw_dot(t_env *e, int x, int y, int color);
+int				rgb2i(int r, int g, int b);
+int				getcolor(t_img *img, int x, int y);
 
 #endif

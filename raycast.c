@@ -12,58 +12,43 @@
 
 #include "wolf3d.h"
 
-void	draw_line(t_raycast *rc, int x, t_env *e)
+void	ray_delimiter(t_raycast *rc, t_ray *ray)
 {
-	int	lineheight;
-	int	drawstart;
-	int	drawend;
-	int	color;
-	int	s;
-
-	color = e->map->wall[(int)rc->mapy][(int)rc->mapx];
-	//printf("[%d:%d]%d\n", (int)rc->mapy, (int)rc->mapx, color);
-	s = 0;
-	lineheight = abs((int)(HEIGHT / rc->perpwalldist));
-	drawstart = -lineheight / 2 + HEIGHT / 2;
-	if (drawstart < 0)
-		drawstart = 0;
-	drawend = lineheight / 2 + HEIGHT / 2;
-	if (drawend >= HEIGHT)
-		drawend = HEIGHT - 1;
-
-	double	wallx;
+	ray->lineheight = abs((int)(HEIGHT / rc->perpwalldist));
+	ray->drawstart = -ray->lineheight / 2 + HEIGHT / 2;
+	if (ray->drawstart < 0)
+		ray->drawstart = 0;
+	ray->drawend = ray->lineheight / 2 + HEIGHT / 2;
+	if (ray->drawend >= HEIGHT)
+		ray->drawend = HEIGHT - 1;
 	if (rc->side == 1)
-		wallx = rc->rayposx + ((rc->mapy - rc->rayposy + (1 - rc->stepy) / 2) / rc->raydiry) * rc->raydirx;
+		ray->wallx = rc->rayposx + ((rc->mapy - rc->rayposy +
+		(1 - rc->stepy) / 2) / rc->raydiry) * rc->raydirx;
 	else
-		wallx = rc->rayposy + ((rc->mapx - rc->rayposx + (1 - rc->stepx) / 2) / rc->raydirx) * rc->raydiry;
-	wallx -= floor(wallx);
+		ray->wallx = rc->rayposy + ((rc->mapx - rc->rayposx +
+		(1 - rc->stepx) / 2) / rc->raydirx) * rc->raydiry;
+	ray->wallx -= floor(ray->wallx);
+	ray->texx = (int)(ray->wallx * (double)64);
+	ray->texx = 64 - ray->texx - 1;
+}
 
-	//if (x == WIDTH / 2)
-	//	printf("wallx:%f\n", wallx);
-	int	texx;
-	int	texy;
+void	draw_ray(t_raycast *rc, int x, t_env *e)
+{
+	t_ray	ray;
 	int	d;
-	int	c;
 
-	texx = (int)(wallx * (double)64);
-	if (rc->side == 0 && rc->raydirx > 0)
-		texx = 64 - texx - 1;
-	if (rc->side == 1 && rc->raydiry < 0)
-		texx = 64 - texx -1;
-
-	//printf("texx:%d\n", texx);
-	while (s < HEIGHT)
+	ray_delimiter(rc, &ray);
+	ray.y = 0;
+	while (ray.y < HEIGHT)
 	{
-		if (s < drawstart)
-			draw_dot(e, x, s, 150 + 150 * 256 + 150 * 256 * 256);
-		else if (s >= drawstart && s <= drawend)
+		if (ray.y < ray.drawstart)
+			draw_dot(e, x, ray.y, 0x0000FF);
+		else if (ray.y >= ray.drawstart && ray.y < ray.drawend)
 		{
-			d = s * 256 - HEIGHT * 128 + lineheight * 128;
-			texy = ((d * 64) / lineheight) / 256;
-
-			c = (texy * 64 + texx) * 4;
-			draw_dot(e, x, s, e->wall->buffer[c] + 256 * e->wall->buffer[c + 1] + 256 * 256 * e->wall->buffer[c + 2]);
-			/*
+			d = ray.y * 256 - HEIGHT * 128 + ray.lineheight * 128;
+			ray.texy = ((d * 64) / ray.lineheight) / 256;
+			draw_dot(e, x, ray.y, getcolor(e->wall, ray.texx, ray.texy));
+			/* affichage par face de cube
 			if (rc->raydiry > 0 && rc->side)
 				draw_dot(e, x, s, 0xFF0000);
 			if (rc->raydiry < 0 && rc->side)
@@ -75,8 +60,8 @@ void	draw_line(t_raycast *rc, int x, t_env *e)
 			*/
 		}
 		else
-			draw_dot(e, x, s, 50 + 50 * 256 + 50 * 256 * 256); 
-		s++;
+			draw_dot(e, x, ray.y, 0x000077); 
+		ray.y++;
 	}
 }
 
@@ -117,7 +102,7 @@ void	rayfindside(t_raycast *rc)
 	}
 }
 
-void	raydda(t_raycast *rc, t_env *e, int x)
+void	raydda(t_raycast *rc, t_env *e)
 {
 	while (rc->hit == 0)
 	{
@@ -135,13 +120,15 @@ void	raydda(t_raycast *rc, t_env *e, int x)
 		}
 		if (e->map->wall[(int)rc->mapy][(int)rc->mapx] > 0)
 			rc->hit = 1;
-		if (x == 512 && rc->hit == 1 )
-		{
-			//printf("raydir:[%f:%f]  hit[%d:%d]\n", rc->raydirx, rc->raydiry, (int)rc->mapx, (int)rc->mapy);
-			//printf("raypos:[%f:%f]\n", rc->rayposx, rc->rayposy);
-
-		}
 	}
+}
+
+void	raydist(t_raycast *rc)
+{
+	if (rc->side == 0)
+		rc->perpwalldist = fabs((rc->mapx - rc->rayposx + (1 - rc->stepx) / 2) / rc->raydirx);
+	else
+		rc->perpwalldist = fabs((rc->mapy - rc->rayposy + (1 - rc->stepy) / 2) / rc->raydiry);
 }
 
 void	raycast(t_env *e)
@@ -155,12 +142,9 @@ void	raycast(t_env *e)
 		rayinit(e, &rc, x);
 		rc.hit = 0;
 		rayfindside(&rc);
-		raydda(&rc, e, x);
-		if (rc.side == 0)
-			rc.perpwalldist = fabs((rc.mapx - rc.rayposx + (1 - rc.stepx) / 2) / rc.raydirx);
-		else
-			rc.perpwalldist = fabs((rc.mapy - rc.rayposy + (1 - rc.stepy) / 2) / rc.raydiry);
-		draw_line(&rc, x, e);
+		raydda(&rc, e);
+		raydist(&rc);
+		draw_ray(&rc, x, e);
 		x++;
 	}
 }

@@ -12,6 +12,16 @@
 
 #include "wolf3d.h"
 
+int		rgb2i(int r, int g, int b)
+{
+	int	color;
+
+	color = 256 * 256 * r;
+	color += 256 * g;
+	color += b;
+	return (color);
+}
+
 void	draw_dot(t_env *e, int x, int y, int color)
 {
 	char	b;
@@ -26,4 +36,16 @@ void	draw_dot(t_env *e, int x, int y, int color)
 	e->imgpx[i] = b;
 	e->imgpx[i + 1] = g;
 	e->imgpx[i + 2] = r;
+}
+
+int		getcolor(t_img *img, int x, int y)
+{
+	int	color;
+	int	c;
+
+	c = (y * img->width + x) * 4;
+	color = img->buffer[c];
+	color += img->buffer[c + 1] * 256;
+	color += img->buffer[c + 2] * 256 * 256;
+	return (color);
 }
