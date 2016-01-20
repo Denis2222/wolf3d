@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 15:10:55 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/18 16:55:50 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/20 18:56:12 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,20 @@ t_map	*map_parse(t_list *list)
 	int		y;
 
 	map = (t_map*)malloc(sizeof(t_map));
-	if (list && map)
+	if (list && map && !(y = 0))
 	{
-		y = 0;
 		map->y = ft_lstlen(list);
 		map->wall = (int**)malloc(sizeof(int*) * map->y);
-		while (list)
+		while (list && (x = -1))
 		{
 			tab = ft_strsplit(list->content, ' ');
+			free(list->content);
 			map->x = ft_tablen(tab);
 			map->wall[y] = (int*)malloc(sizeof(int) * map->x);
-			x = 0;
-			while (x < map->x)
+			while (++x < map->x)
 			{
 				map->wall[y][x] = ft_atoi(tab[x]);
-				x++;
+				free(tab[x]);
 			}
 			list = list->next;
 			y++;

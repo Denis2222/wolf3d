@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 17:22:37 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/19 22:22:40 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/20 22:55:30 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,39 +30,84 @@ void	ray_delimiter(t_raycast *rc, t_ray *ray)
 	ray->wallx -= floor(ray->wallx);
 	ray->texx = (int)(ray->wallx * (double)64);
 	ray->texx = 64 - ray->texx - 1;
+	ray->y = 0;
+}
+
+void	draw_ray_ceil(t_env *e, t_ray *ray)
+{
+	while (ray->y < ray->drawstart)
+		draw_dot(e, ray->x, ray->y++, 0x333333);
+}
+
+void	draw_ray_wall(t_env *e, t_raycast *rc, t_ray *ray)
+{
+	int	d;
+	int	wall;
+
+	wall = e->map->wall[(int)rc->mapy][(int)rc->mapx];
+	while (ray->y < ray->drawend)
+	{
+		d = ray->y * 256 - HEIGHT * 128 + ray->lineheight * 128;
+		ray->texy = ((d * 64) / ray->lineheight) / 256;
+		draw_dot(e, ray->x, ray->y, getcolor(e->wall[wall], ray->texx, ray->texy, rc->perpwalldist));
+		ray->y++;
+	}
+}
+
+void	draw_ray_floor(t_env *e, t_raycast *rc, t_ray *ray)
+{
+	//if (ray->x == WIDTH / 2)
+	//{
+	if (rc->side == 0 && rc->raydirx > 0)
+	{
+		ray->floorxwall = rc->mapx;
+		ray->floorywall = rc->mapy + ray->wallx;
+	}
+	else if (rc->side == 0 && rc->raydiry < 0)
+	{
+		ray->floorxwall = rc->mapx + 1.0;
+		ray->floorywall = rc->mapy + ray->wallx;
+	}
+	else if (rc->side == 1 && rc->raydiry > 0)
+	{
+		ray->floorxwall = rc->mapx + ray->wallx;
+		ray->floorywall = rc->mapy;
+	}
+	else
+	{
+		ray->floorxwall = rc->mapx + ray->wallx;
+		ray->floorywall = rc->mapy + 1.0;
+	}
+
+	ray->distwall = rc->perpwalldist;
+	ray->distplayer = 0.0;
+	printf("%f %f\n", ray->floorxwall, ray->floorywall);
+
+	while (ray->y < HEIGHT)
+	{
+		ray->currentdist = HEIGHT / (2.0 * ray->y - HEIGHT);
+		ray->weight = (ray->currentdist - ray->distplayer) / (ray->distwall - ray->distplayer);
+		ray->currentfloorx = ray->weight * ray->floorxwall + (1.0 - ray->weight) * (double)e->player->pos->x;
+		ray->currentfloory = ray->weight * ray->floorywall + (1.0 - ray->weight) * (double)e->player->pos->y;
+		
+		ray->floortexx = (int)(ray->currentfloorx * 64) % 64;
+		ray->floortexy = (int)(ray->currentfloory * 64) % 64;
+		
+		draw_dot(e, ray->x, ray->y, getcolor(e->wall[0], ray->floortexx, ray->floortexy, 0));
+		ray->y++;
+	}
+	//}
 }
 
 void	draw_ray(t_raycast *rc, int x, t_env *e)
 {
 	t_ray	ray;
-	int	d;
 
 	ray_delimiter(rc, &ray);
-	ray.y = 0;
-	while (ray.y < HEIGHT)
-	{
-		if (ray.y < ray.drawstart)
-			draw_dot(e, x, ray.y, 0x0000FF);
-		else if (ray.y >= ray.drawstart && ray.y < ray.drawend)
-		{
-			d = ray.y * 256 - HEIGHT * 128 + ray.lineheight * 128;
-			ray.texy = ((d * 64) / ray.lineheight) / 256;
-			draw_dot(e, x, ray.y, getcolor(e->wall, ray.texx, ray.texy, rc->perpwalldist));
-			/* affichage par face de cube
-			if (rc->raydiry > 0 && rc->side)
-				draw_dot(e, x, s, 0xFF0000);
-			if (rc->raydiry < 0 && rc->side)
-				draw_dot(e, x, s, 0x00FF00);
-			if (rc->raydirx > 0 && rc->side == 0)
-				draw_dot(e, x, s, 0x0000FF);
-			if (rc->raydirx < 0 && rc->side == 0)
-				draw_dot(e, x, s, 0xAA00BB);
-			*/
-		}
-		else
-			draw_dot(e, x, ray.y, 0x000077); 
-		ray.y++;
-	}
+	ray.x = x;
+	draw_ray_ceil(e, &ray);
+	draw_ray_wall(e, rc, &ray);
+	draw_ray_floor(e, rc, &ray);
 }
 
 void	rayinit(t_env *e, t_raycast *rc, int x)
@@ -74,8 +119,10 @@ void	rayinit(t_env *e, t_raycast *rc, int x)
 	rc->raydiry = e->player->dir->y + e->player->plane->y * rc->camerax;
 	rc->mapx = (int)rc->rayposx;
 	rc->mapy = (int)rc->rayposy;
-	rc->deltadistx = sqrt(1 + (rc->raydiry * rc->raydiry) / (rc->raydirx * rc->raydirx));
-	rc->deltadisty = sqrt(1 + (rc->raydirx * rc->raydirx) / (rc->raydiry * rc->raydiry));
+	rc->deltadistx = sqrt(1 + (rc->raydiry * rc->raydiry)
+			/ (rc->raydirx * rc->raydirx));
+	rc->deltadisty = sqrt(1 + (rc->raydirx * rc->raydirx) 
+			/ (rc->raydiry * rc->raydiry));
 }
 
 void	rayfindside(t_raycast *rc)
@@ -126,9 +173,11 @@ void	raydda(t_raycast *rc, t_env *e)
 void	raydist(t_raycast *rc)
 {
 	if (rc->side == 0)
-		rc->perpwalldist = fabs((rc->mapx - rc->rayposx + (1 - rc->stepx) / 2) / rc->raydirx);
+		rc->perpwalldist = fabs(
+				(rc->mapx - rc->rayposx + (1 - rc->stepx) / 2) / rc->raydirx);
 	else
-		rc->perpwalldist = fabs((rc->mapy - rc->rayposy + (1 - rc->stepy) / 2) / rc->raydiry);
+		rc->perpwalldist = fabs(
+				(rc->mapy - rc->rayposy + (1 - rc->stepy) / 2) / rc->raydiry);
 }
 
 void	raycast(t_env *e)

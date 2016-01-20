@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 15:02:25 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/19 22:06:22 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/20 22:36:13 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,9 @@ typedef struct	s_env
 	int			bpp;
 	int			size_line;
 	int			endian;
-
 	t_map		*map;
 	t_player	*player;
-	t_img		*wall;
+	t_img		*wall[8];
 }				t_env;
 
 typedef struct	s_raycast
@@ -106,6 +105,19 @@ typedef struct	s_ray
 	double		wallx;
 	int			texx;
 	int			texy;
+
+	double		floorxwall;
+	double		floorywall;
+	double		distwall;
+	double		distplayer;
+	double		currentdist;
+	double		weight;
+
+	double		currentfloorx;
+	double		currentfloory;
+
+	int			floortexx;
+	int			floortexy;
 }				t_ray;
 
 void			setup_mlx(t_player *player, t_map *map);
@@ -123,5 +135,8 @@ void			raycast(t_env *e);
 void			draw_dot(t_env *e, int x, int y, int color);
 int				rgb2i(int r, int g, int b);
 int				getcolor(t_img *img, int x, int y, int fade);
+void			drawbyside(t_env *e, t_raycast *rc, int x, int y);
+
+void			texture_load(t_env *e);
 
 #endif

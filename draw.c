@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 23:23:52 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/18 23:27:20 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/20 18:48:01 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,16 @@ int		getcolor(t_img *img, int x, int y, int fade)
 	while (fade--)
 		color = ((color >> 1) & 8355711);
 	return (color);
+}
+
+void	drawbyside(t_env *e, t_raycast *rc, int x, int y)
+{
+	if (rc->raydiry > 0 && rc->side)
+		draw_dot(e, x, y, 0xFF0000);
+	if (rc->raydiry < 0 && rc->side)
+		draw_dot(e, x, y, 0x00FF00);
+	if (rc->raydirx > 0 && rc->side == 0)
+		draw_dot(e, x, y, 0x0000FF);
+	if (rc->raydirx < 0 && rc->side == 0)
+		draw_dot(e, x, y, 0xAA00BB);
 }
