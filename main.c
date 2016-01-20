@@ -23,7 +23,7 @@ int	main(void)
 	map = map_parse(ft_lstrev(list));
 	map_print(map);
 
-	player = newplayer(2, 2);
+	player = newplayer(6, 6);
 
 	setup_mlx(player, map);
 	return (0);

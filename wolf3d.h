@@ -17,8 +17,8 @@
 # include "libft/libft.h"
 # include "minilibx/mlx.h"
 
-# define WIDTH 1024
-# define HEIGHT 800
+# define WIDTH 320
+# define HEIGHT 240
 
 # define KEY_ESC 53
 # define KEY_UP 126

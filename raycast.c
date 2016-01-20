@@ -38,17 +38,20 @@ void	draw_line(t_raycast *rc, int x, t_env *e)
 		wallx = rc->rayposy + ((rc->mapx - rc->rayposx + (1 - rc->stepx) / 2) / rc->raydirx) * rc->raydiry;
 	wallx -= floor(wallx);
 
+	//if (x == WIDTH / 2)
+	//	printf("wallx:%f\n", wallx);
 	int	texx;
 	int	texy;
 	int	d;
 	int	c;
 
-	texx = (int)wallx * 256;
+	texx = (int)(wallx * (double)64);
 	if (rc->side == 0 && rc->raydirx > 0)
-		texx = 256 - texx - 1;
+		texx = 64 - texx - 1;
 	if (rc->side == 1 && rc->raydiry < 0)
-		texx = 256 - texx -1;
+		texx = 64 - texx -1;
 
+	//printf("texx:%d\n", texx);
 	while (s < HEIGHT)
 	{
 		if (s < drawstart)

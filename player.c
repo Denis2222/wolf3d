@@ -19,6 +19,6 @@ t_player *newplayer(double x, double y)
 	player = malloc(sizeof(t_player));
 	player->pos = newcoord(x, y);
 	player->dir = newcoord(1, 0);
-	player->plane = newcoord(0, 0.7);
+	player->plane = newcoord(0, 0.66);
 	return (player);
 }
