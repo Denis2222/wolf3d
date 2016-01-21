@@ -26,4 +26,8 @@ void	texture_load(t_env *e)
 	e->wall[6] = mlx_xpm_file_to_image(e->mlx,"gfx/wall_brown.xpm", &width, &height);
 
 	e->spr[0] = mlx_xpm_file_to_image(e->mlx, "gfx/sprite1.xpm", &width, &height);
+	printf("%d %d %d ", e->spr[0]->buffer[0]
+	, e->spr[0]->buffer[1]
+, e->spr[0]->buffer[2]
+		);
 }

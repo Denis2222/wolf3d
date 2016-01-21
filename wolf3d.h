@@ -68,6 +68,16 @@ typedef struct	s_sprite
 	int			texture;
 }				t_sprite;
 
+typedef struct	s_keyboard
+{
+	int			up;
+	int			down;
+	int			left;
+	int			right;
+	int			sleft;
+	int			sright;
+}				t_keyboard;
+
 typedef struct	s_env
 {
 	void		*mlx;
@@ -82,6 +92,7 @@ typedef struct	s_env
 	t_img		*wall[8];
 	t_img		*spr[8];
 	t_sprite	sprite[8];
+	t_keyboard	key;
 }				t_env;
 
 typedef struct	s_raycast
@@ -130,17 +141,7 @@ typedef struct	s_ray
 	int			floortexy;
 }				t_ray;
 
-typedef struct	s_keyboard
-{
-	int			up;
-	int			down;
-	int			left;
-	int			right;
-	int			sleft;
-	int			sright;
-}				t_keyboard;
-
-# define NBSPRITE 1
+# define NBSPRITE 3
 
 void			setup_mlx(t_player *player, t_map *map);
 int				key_press_hook(int keycode, t_env *e);
@@ -163,5 +164,9 @@ void			drawbyside(t_env *e, t_raycast *rc, int x, int y);
 
 void			texture_load(t_env *e);
 void			load_sprites(t_env *e);
+void			initkeyboard(t_env *e);
+void			key_press(t_keyboard *key, int keycode);
+void			key_release(t_keyboard *key, int keycode);
 
+void			render(t_env *e);
 #endif

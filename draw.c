@@ -29,6 +29,8 @@ void	draw_dot(t_env *e, int x, int y, int color)
 	char	r;
 	int		i;
 
+	if (color == 256 * 256 * 256 + 256 * 256 + 256)
+		return ;
 	b = color % 256;
 	g = (color / 256) % 256;
 	r = (color / 256 / 256) % 256;
@@ -46,6 +48,8 @@ int		getcolor(t_img *img, int x, int y, int fade)
 	fade /= 8;
 	c = (y * img->width + x) * 4;
 	color = img->buffer[c];
+	if (color == -120 && img->buffer[c + 1] == 0 && img->buffer[c+2] == -104)
+		return (256 * 256 * 256 + 256 * 256 + 256);
 	color += img->buffer[c + 1] * 256;
 	color += img->buffer[c + 2] * 256 * 256;
 	while (fade--)

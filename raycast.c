@@ -95,70 +95,58 @@ void	draw_ray_floor(t_env *e, t_raycast *rc, t_ray *ray)
 void	draw_sprite(t_env *e, t_raycast *rc)
 {
 	int	i;
+	double	spritex;
+	double	spritey;
+	double	invdet;
+	double	tx;
+	double	ty;
+	int		spritescreenx;
+	int		spriteheight;
+	int		drawstarty;
+	int		drawendy;
+	int		spritewidth;
+	int		drawstartx;
+	int		drawendx;
+	int		stripe;
+	int		y;
+	int		texx;
+	int		d;
+	int		texy;
 
-	(void)rc;
 	i = 0;
 	while (i < NBSPRITE)
 	{
-		double	spritex;
-		double	spritey;
-		double	invdet;
-		double	tx;
-		double	ty;
-		int		spritescreenx;
-
 		spritex = e->sprite[i].x - e->player->pos->x;
 		spritey = e->sprite[i].y - e->player->pos->y;
-		
 		invdet = 1.0 / (e->player->plane->x * e->player->dir->y
 			- e->player->dir->x * e->player->plane->y);
-		
 		tx = invdet * (e->player->dir->y * spritex - e->player->dir->x * spritey);
 		ty = invdet * (-e->player->plane->y * spritex + e->player->plane->x * spritey);
-
 		spritescreenx = (int)((WIDTH / 2) * (1 + tx / ty));
-
-		int spriteheight;
 		spriteheight = abs((int)(HEIGHT / ty));
-
-		int	drawstarty;
-		int	drawendy;
-
 		drawstarty = -spriteheight / 2 + HEIGHT / 2;
 		if (drawstarty < 0)
 			drawstarty = 0;
 		drawendy = spriteheight / 2 + HEIGHT / 2;
 		if (drawendy >= HEIGHT)
 			drawendy = HEIGHT - 1;
-
-		int	spritewidth;
 		spritewidth = abs((int)(HEIGHT / ty));
-
-		int drawstartx;
-		int drawendx;
-
 		drawstartx = -spritewidth / 2 + spritescreenx;
 		if (drawstartx < 0)
 			drawstartx = 0;
 		drawendx = spritewidth / 2 + spritescreenx;
 		if (drawendx >= WIDTH)
 			drawendx = WIDTH - 1;
-
-		int stripe;
 		stripe = drawstartx;
 		while (stripe < drawendx)
 		{
-			int texx;
 			texx = (int)(256 * (stripe - (-spritewidth / 2 + spritescreenx)) * 64 / spritewidth) / 256;
 			if (ty > 0 && stripe > 0 && stripe < WIDTH && ty < rc->zbuffer[stripe])
 			{
-				int	y;
 				y = drawstarty;
 				while ( y < drawendy)
 				{
-					int d;
 					d = (y) * 256 - HEIGHT * 128 + spriteheight * 128;
-					int	texy;
 					texy = ((d * 64) / spriteheight) / 256;
 					draw_dot(e, stripe, y, getcolor(e->spr[0],texx, texy, 0 ));
 					y++;
