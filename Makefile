@@ -8,6 +8,7 @@ SRCS = map.c \
 	   setup_mlx.c \
 	   draw.c \
 	   texture.c \
+	   sprite.c \
 	   main.c
 
 NAME = wolf3d

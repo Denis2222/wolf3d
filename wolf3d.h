@@ -17,8 +17,8 @@
 # include "libft/libft.h"
 # include "minilibx/mlx.h"
 
-# define WIDTH 1024
-# define HEIGHT 840
+# define WIDTH 800
+# define HEIGHT 600
 
 # define KEY_ESC 53
 # define KEY_UP 126
@@ -61,6 +61,13 @@ typedef struct	s_img
 	char		*buffer;
 }				t_img;
 
+typedef struct	s_sprite
+{
+	double		x;
+	double		y;
+	int			texture;
+}				t_sprite;
+
 typedef struct	s_env
 {
 	void		*mlx;
@@ -73,6 +80,8 @@ typedef struct	s_env
 	t_map		*map;
 	t_player	*player;
 	t_img		*wall[8];
+	t_img		*spr[8];
+	t_sprite	sprite[8];
 }				t_env;
 
 typedef struct	s_raycast
@@ -93,6 +102,7 @@ typedef struct	s_raycast
 	double		perpwalldist;
 	int			hit;
 	int			side;
+	double		zbuffer[WIDTH];
 }				t_raycast;
 
 typedef struct	s_ray
@@ -130,6 +140,8 @@ typedef struct	s_keyboard
 	int			sright;
 }				t_keyboard;
 
+# define NBSPRITE 1
+
 void			setup_mlx(t_player *player, t_map *map);
 int				key_press_hook(int keycode, t_env *e);
 int				key_release_hook(int keycode, t_env *e);
@@ -150,5 +162,6 @@ int				getcolor(t_img *img, int x, int y, int fade);
 void			drawbyside(t_env *e, t_raycast *rc, int x, int y);
 
 void			texture_load(t_env *e);
+void			load_sprites(t_env *e);
 
 #endif

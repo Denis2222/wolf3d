@@ -102,6 +102,7 @@ void	setup_mlx(t_player *player, t_map *map)
 	e.mlx = mlx_init();
 	e.win = mlx_new_window(e.mlx, WIDTH, HEIGHT, "Wolf3d");
 	texture_load(&e);
+	load_sprites(&e);
 	e.bpp = 0;
 	e.size_line = 0;
 	e.endian = 0;
