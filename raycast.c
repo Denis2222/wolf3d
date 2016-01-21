@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 17:22:37 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/21 00:47:54 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/21 17:50:26 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,13 @@ void	draw_ray_wall(t_env *e, t_raycast *rc, t_ray *ray)
 	{
 		d = ray->y * 256 - HEIGHT * 128 + ray->lineheight * 128;
 		ray->texy = ((d * 64) / ray->lineheight) / 256;
-		draw_dot(e, ray->x, ray->y, getcolor(e->wall[wall + 1], ray->texx, ray->texy, rc->perpwalldist));
+		draw_dot(e, ray->x, ray->y, getcolor(e->wall[wall + 1],
+					ray->texx, ray->texy, rc->perpwalldist));
 		ray->y++;
 	}
 }
 
-void	draw_ray_floor(t_env *e, t_raycast *rc, t_ray *ray)
+void	draw_ray_floor_size(t_raycast *rc, t_ray *ray)
 {
 	if (rc->side == 0 && rc->raydirx > 0)
 	{
@@ -78,96 +79,80 @@ void	draw_ray_floor(t_env *e, t_raycast *rc, t_ray *ray)
 	}
 	ray->distwall = rc->perpwalldist;
 	ray->distplayer = 0.0;
+}
+
+void	draw_ray_floor(t_env *e, t_raycast *rc, t_ray *ray)
+{
+	draw_ray_floor_size(rc, ray);
 	while (ray->y < HEIGHT)
 	{
 		ray->currentdist = HEIGHT / (2.0 * ray->y - HEIGHT);
-		ray->weight = (ray->currentdist - ray->distplayer) / (ray->distwall - ray->distplayer);
-		ray->currentfloorx = ray->weight * ray->floorxwall + (1.0 - ray->weight) * e->player->pos->x;
-		ray->currentfloory = ray->weight * ray->floorywall + (1.0 - ray->weight) * e->player->pos->y;
+		ray->weight = (ray->currentdist - ray->distplayer)
+			/ (ray->distwall - ray->distplayer);
+		ray->currentfloorx = ray->weight * ray->floorxwall
+			+ (1.0 - ray->weight) * e->player->pos->x;
+		ray->currentfloory = ray->weight * ray->floorywall
+			+ (1.0 - ray->weight) * e->player->pos->y;
 		ray->floortexx = (int)(ray->currentfloorx * 64) % 64;
 		ray->floortexy = (int)(ray->currentfloory * 64) % 64;
-		draw_dot(e, ray->x, ray->y, getcolor(e->wall[0], ray->floortexx, ray->floortexy, 0));
-		draw_dot(e, ray->x, HEIGHT - ray->y, getcolor(e->wall[1], ray->floortexx, ray->floortexy, 0));
+		draw_dot(e, ray->x, ray->y,
+				getcolor(e->wall[0], ray->floortexx, ray->floortexy, 0));
+		draw_dot(e, ray->x, HEIGHT - ray->y,
+				getcolor(e->wall[1], ray->floortexx, ray->floortexy, 0));
 		ray->y++;
 	}
 }
 
-void	draw_sprite(t_env *e, t_raycast *rc)
+void	ray_sprite(t_env *e, t_raysprite *rs)
 {
-	int	i;
-	double	spritex;
-	double	spritey;
-	double	invdet;
-	double	tx;
-	double	ty;
-	int		spritescreenx;
-	int		spriteheight;
-	int		drawstarty;
-	int		drawendy;
-	int		spritewidth;
-	int		drawstartx;
-	int		drawendx;
-	int		stripe;
-	int		y;
-	int		texx;
-	int		d;
-	int		texy;
-
-	i = 0;
-	while (i < NBSPRITE)
-	{
-		spritex = e->sprite[i].x - e->player->pos->x;
-		spritey = e->sprite[i].y - e->player->pos->y;
-		invdet = 1.0 / (e->player->plane->x * e->player->dir->y
-			- e->player->dir->x * e->player->plane->y);
-		tx = invdet * (e->player->dir->y * spritex - e->player->dir->x * spritey);
-		ty = invdet * (-e->player->plane->y * spritex + e->player->plane->x * spritey);
-		spritescreenx = (int)((WIDTH / 2) * (1 + tx / ty));
-		spriteheight = abs((int)(HEIGHT / ty));
-		drawstarty = -spriteheight / 2 + HEIGHT / 2;
-		if (drawstarty < 0)
-			drawstarty = 0;
-		drawendy = spriteheight / 2 + HEIGHT / 2;
-		if (drawendy >= HEIGHT)
-			drawendy = HEIGHT - 1;
-		spritewidth = abs((int)(HEIGHT / ty));
-		drawstartx = -spritewidth / 2 + spritescreenx;
-		if (drawstartx < 0)
-			drawstartx = 0;
-		drawendx = spritewidth / 2 + spritescreenx;
-		if (drawendx >= WIDTH)
-			drawendx = WIDTH - 1;
-		stripe = drawstartx;
-		while (stripe < drawendx)
-		{
-			texx = (int)(256 * (stripe - (-spritewidth / 2 + spritescreenx)) * 64 / spritewidth) / 256;
-			if (ty > 0 && stripe > 0 && stripe < WIDTH && ty < rc->zbuffer[stripe])
-			{
-				y = drawstarty;
-				while ( y < drawendy)
-				{
-					d = (y) * 256 - HEIGHT * 128 + spriteheight * 128;
-					texy = ((d * 64) / spriteheight) / 256;
-					draw_dot(e, stripe, y, getcolor(e->spr[0],texx, texy, 0 ));
-					y++;
-				}
-			}
-			stripe++;
-		}
-		i++;
-	}
+	rs->spritex = e->sprite[rs->i].x - e->player->pos->x;
+	rs->spritey = e->sprite[rs->i].y - e->player->pos->y;
+	rs->invdet = 1.0 / (e->player->plane->x * e->player->dir->y
+		- e->player->dir->x * e->player->plane->y);
+	rs->tx = rs->invdet *
+		(e->player->dir->y * rs->spritex - e->player->dir->x * rs->spritey);
+	rs->ty = rs->invdet * (-e->player->plane->y
+		* rs->spritex + e->player->plane->x * rs->spritey);
+	rs->spritescreenx = (int)((WIDTH / 2) * (1 + rs->tx / rs->ty));
+	rs->spriteheight = abs((int)(HEIGHT / rs->ty));
+	rs->drawstarty = -rs->spriteheight / 2 + HEIGHT / 2;
+	if (rs->drawstarty < 0)
+		rs->drawstarty = 0;
+	rs->drawendy = rs->spriteheight / 2 + HEIGHT / 2;
+	if (rs->drawendy >= HEIGHT)
+		rs->drawendy = HEIGHT - 1;
+	rs->spritewidth = abs((int)(HEIGHT / rs->ty));
+	rs->drawstartx = -rs->spritewidth / 2 + rs->spritescreenx;
+	if (rs->drawstartx < 0)
+		rs->drawstartx = 0;
+	rs->drawendx = rs->spritewidth / 2 + rs->spritescreenx;
+	if (rs->drawendx >= WIDTH)
+		rs->drawendx = WIDTH - 1;
+	rs->stripe = rs->drawstartx;
 }
 
-void	draw_ray(t_raycast *rc, int x, t_env *e)
+void	draw_sprite(t_env *e, t_raycast *rc, t_raysprite *rs)
 {
-	t_ray	ray;
-
-	ray_delimiter(rc, &ray);
-	ray.x = x;
-	rc->zbuffer[x] = rc->perpwalldist;
-	draw_ray_ceil(e, &ray);
-	draw_ray_wall(e, rc, &ray);
-	draw_ray_floor(e, rc, &ray);
+	while (rs->stripe < rs->drawendx)
+	{
+		rs->texx = (int)(256 * (rs->stripe - (-rs->spritewidth
+			/ 2 + rs->spritescreenx)) * 64 / rs->spritewidth) / 256;
+		if (rs->ty > 0 && rs->stripe > 0
+				&& rs->stripe < WIDTH && rs->ty < rc->zbuffer[rs->stripe])
+		{
+			rs->y = rs->drawstarty;
+			while (rs->y < rs->drawendy)
+			{
+				rs->d = (rs->y) * 256 - HEIGHT * 128 + rs->spriteheight * 128;
+				rs->texy = ((rs->d * 64) / rs->spriteheight) / 256;
+				draw_dot(e, rs->stripe, rs->y,
+					getcolor(e->spr[e->sprite[rs->i].texture],
+						rs->texx, rs->texy, 0));
+				rs->y++;
+			}
+		}
+		rs->stripe++;
+	}
 }
 
 void	rayinit(t_env *e, t_raycast *rc, int x)
@@ -181,7 +166,7 @@ void	rayinit(t_env *e, t_raycast *rc, int x)
 	rc->mapy = (int)rc->rayposy;
 	rc->deltadistx = sqrt(1 + (rc->raydiry * rc->raydiry)
 			/ (rc->raydirx * rc->raydirx));
-	rc->deltadisty = sqrt(1 + (rc->raydirx * rc->raydirx) 
+	rc->deltadisty = sqrt(1 + (rc->raydirx * rc->raydirx)
 			/ (rc->raydiry * rc->raydiry));
 }
 
@@ -240,9 +225,22 @@ void	raydist(t_raycast *rc)
 				(rc->mapy - rc->rayposy + (1 - rc->stepy) / 2) / rc->raydiry);
 }
 
+void	draw_ray(t_raycast *rc, int x, t_env *e)
+{
+	t_ray	ray;
+
+	ray_delimiter(rc, &ray);
+	ray.x = x;
+	rc->zbuffer[x] = rc->perpwalldist;
+	draw_ray_ceil(e, &ray);
+	draw_ray_wall(e, rc, &ray);
+	draw_ray_floor(e, rc, &ray);
+}
+
 void	raycast(t_env *e)
 {
 	t_raycast	rc;
+	t_raysprite	rs;
 	int			x;
 
 	x = 0;
@@ -256,5 +254,11 @@ void	raycast(t_env *e)
 		draw_ray(&rc, x, e);
 		x++;
 	}
-	draw_sprite(e, &rc);
+	rs.i = 0;
+	while (rs.i < NBSPRITE)
+	{
+		ray_sprite(e, &rs);
+		draw_sprite(e, &rc, &rs);
+		rs.i++;
+	}
 }

@@ -6,11 +6,20 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 15:10:55 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/20 18:56:12 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/21 14:04:34 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
+
+int		atoi_free(char *tab)
+{
+	int	nb;
+
+	nb = ft_atoi(tab);
+	free(tab);
+	return (nb);
+}
 
 t_map	*map_parse(t_list *list)
 {
@@ -31,10 +40,7 @@ t_map	*map_parse(t_list *list)
 			map->x = ft_tablen(tab);
 			map->wall[y] = (int*)malloc(sizeof(int) * map->x);
 			while (++x < map->x)
-			{
-				map->wall[y][x] = ft_atoi(tab[x]);
-				free(tab[x]);
-			}
+				map->wall[y][x] = atoi_free(tab[x]);
 			list = list->next;
 			y++;
 		}

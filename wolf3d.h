@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 15:02:25 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/21 01:35:02 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/21 19:20:30 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@
 # include "libft/libft.h"
 # include "minilibx/mlx.h"
 
-# define WIDTH 800
-# define HEIGHT 600
+# define WIDTH 640
+# define HEIGHT 480
+
+# define NBSPRITE 7
 
 # define KEY_ESC 53
 # define KEY_UP 126
@@ -78,6 +80,17 @@ typedef struct	s_keyboard
 	int			sright;
 }				t_keyboard;
 
+typedef struct	s_hud
+{
+	int			camx;
+	int			camy;
+	int			w;
+	int			h;
+	int			texture;
+	int			c;
+	int			nb;
+}				t_hud;
+
 typedef struct	s_env
 {
 	void		*mlx;
@@ -91,6 +104,7 @@ typedef struct	s_env
 	t_player	*player;
 	t_img		*wall[8];
 	t_img		*spr[8];
+	t_hud		hud[8];
 	t_sprite	sprite[8];
 	t_keyboard	key;
 }				t_env;
@@ -141,7 +155,27 @@ typedef struct	s_ray
 	int			floortexy;
 }				t_ray;
 
-# define NBSPRITE 3
+typedef struct	s_raysprite
+{
+	int			i;
+	double		spritex;
+	double		spritey;
+	double		invdet;
+	double		tx;
+	double		ty;
+	int			spritescreenx;
+	int			spriteheight;
+	int			drawstarty;
+	int			drawendy;
+	int			spritewidth;
+	int			drawstartx;
+	int			drawendx;
+	int			stripe;
+	int			y;
+	int			texx;
+	int			d;
+	int			texy;
+}				t_raysprite;
 
 void			setup_mlx(t_player *player, t_map *map);
 int				key_press_hook(int keycode, t_env *e);
@@ -167,6 +201,8 @@ void			load_sprites(t_env *e);
 void			initkeyboard(t_env *e);
 void			key_press(t_keyboard *key, int keycode);
 void			key_release(t_keyboard *key, int keycode);
+void			key_up_down(t_env *e);
+void			key_left_right(t_env *e);
 
 void			render(t_env *e);
 #endif

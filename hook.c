@@ -1,24 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sprite.c                                           :+:      :+:    :+:   */
+/*   hook.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/01/21 13:56:29 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/21 18:05:48 by dmoureu-         ###   ########.fr       */
+/*   Created: 2016/01/21 15:58:49 by dmoureu-          #+#    #+#             */
+/*   Updated: 2016/01/21 16:00:14 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
 
-void	load_sprites(t_env *e)
+int		key_press_hook(int keycode, t_env *e)
 {
-	e->sprite[0] = (t_sprite){3.5, 3.5, 0};
-	e->sprite[1] = (t_sprite){6.5, 12.5, 1};
-	e->sprite[2] = (t_sprite){4.3, 8.3, 1};
-	e->sprite[3] = (t_sprite){2.5, 2.5, 1};
-	e->sprite[4] = (t_sprite){4.5, 9.5, 1};
-	e->sprite[5] = (t_sprite){4.5, 6.5, 1};
-	e->sprite[6] = (t_sprite){3.5, 6.5, 1};
+	key_press(&e->key, keycode);
+	if (keycode == KEY_ESC)
+		exit(EXIT_SUCCESS);
+	return (0);
+}
+
+int		key_release_hook(int keycode, t_env *e)
+{
+	key_release(&e->key, keycode);
+	return (0);
+}
+
+int		expose_hook(t_env *e)
+{
+	render(e);
+	return (0);
 }

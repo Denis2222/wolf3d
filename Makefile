@@ -10,6 +10,7 @@ SRCS = map.c \
 	   texture.c \
 	   keyboard.c \
 	   sprite.c \
+	   hook.c \
 	   main.c
 
 NAME = wolf3d

@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 23:23:52 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/20 18:48:01 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/21 13:57:20 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,10 @@ int		getcolor(t_img *img, int x, int y, int fade)
 	fade /= 8;
 	c = (y * img->width + x) * 4;
 	color = img->buffer[c];
-	if (color == -120 && img->buffer[c + 1] == 0 && img->buffer[c+2] == -104)
+	if (color == -120 && img->buffer[c + 1] == 0 && img->buffer[c + 2] == -104)
 		return (256 * 256 * 256 + 256 * 256 + 256);
 	color += img->buffer[c + 1] * 256;
 	color += img->buffer[c + 2] * 256 * 256;
-	while (fade--)
-		color = ((color >> 1) & 8355711);
 	return (color);
 }
 
