@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 22:54:49 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/20 20:04:53 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/21 00:55:13 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,13 +75,21 @@ void	key_left_right(int keycode, t_env *e)
 	}
 }
 
-int		key_hook(int keycode, t_env *e)
+int		key_press_hook(int keycode, t_env *e)
 {
 	if (keycode == KEY_ESC)
 		exit(EXIT_SUCCESS);
 	key_up_down(keycode, e);
 	key_left_right(keycode, e);
 	render(e);
+	return (0);
+}
+
+int		key_release_hook(int keycode, t_env *e)
+{
+	(void)e;
+
+	ft_putnbr(keycode);
 	return (0);
 }
 
@@ -97,7 +105,8 @@ void	setup_mlx(t_player *player, t_map *map)
 	e.bpp = 0;
 	e.size_line = 0;
 	e.endian = 0;
-	mlx_hook(e.win, 2, 1, key_hook, &e);
+	mlx_hook(e.win, 2, 1, key_press_hook, &e);
+	mlx_hook(e.win, 3, 1, key_release_hook, &e);
 	mlx_expose_hook(e.win, expose_hook, &e);
 	mlx_loop(e.mlx);
 }

@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 17:22:37 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/21 00:04:15 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/21 00:47:54 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	draw_ray_wall(t_env *e, t_raycast *rc, t_ray *ray)
 	{
 		d = ray->y * 256 - HEIGHT * 128 + ray->lineheight * 128;
 		ray->texy = ((d * 64) / ray->lineheight) / 256;
-		draw_dot(e, ray->x, ray->y, getcolor(e->wall[wall], ray->texx, ray->texy, rc->perpwalldist));
+		draw_dot(e, ray->x, ray->y, getcolor(e->wall[wall + 1], ray->texx, ray->texy, rc->perpwalldist));
 		ray->y++;
 	}
 }
@@ -76,12 +76,6 @@ void	draw_ray_floor(t_env *e, t_raycast *rc, t_ray *ray)
 		ray->floorxwall = rc->mapx + ray->wallx;
 		ray->floorywall = rc->mapy + 1.0;
 	}
-
-	if (ray->x == WIDTH / 2)
-	{
-	
-		printf("[%f:%f] %d %f\n", ray->floorxwall, ray->floorywall, rc->side, rc->raydiry);
-	}
 	ray->distwall = rc->perpwalldist;
 	ray->distplayer = 0.0;
 	while (ray->y < HEIGHT)
@@ -90,9 +84,10 @@ void	draw_ray_floor(t_env *e, t_raycast *rc, t_ray *ray)
 		ray->weight = (ray->currentdist - ray->distplayer) / (ray->distwall - ray->distplayer);
 		ray->currentfloorx = ray->weight * ray->floorxwall + (1.0 - ray->weight) * e->player->pos->x;
 		ray->currentfloory = ray->weight * ray->floorywall + (1.0 - ray->weight) * e->player->pos->y;
-		ray->floortexx = (int)(ray->currentfloorx * 64) % 64;
-		ray->floortexy = (int)(ray->currentfloory * 64) % 64;
+		ray->floortexx = (int)(ray->currentfloorx * 256) % 256;
+		ray->floortexy = (int)(ray->currentfloory * 256) % 256;
 		draw_dot(e, ray->x, ray->y, getcolor(e->wall[0], ray->floortexx, ray->floortexy, 0));
+		draw_dot(e, ray->x, HEIGHT - ray->y, getcolor(e->wall[1], ray->floortexx, ray->floortexy, 0));
 		ray->y++;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 15:02:25 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/20 22:36:13 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/21 01:35:02 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 # include "libft/libft.h"
 # include "minilibx/mlx.h"
 
-# define WIDTH 820
-# define HEIGHT 640
+# define WIDTH 1024
+# define HEIGHT 840
 
 # define KEY_ESC 53
 # define KEY_UP 126
@@ -120,8 +120,20 @@ typedef struct	s_ray
 	int			floortexy;
 }				t_ray;
 
+typedef struct	s_keyboard
+{
+	int			up;
+	int			down;
+	int			left;
+	int			right;
+	int			sleft;
+	int			sright;
+}				t_keyboard;
+
 void			setup_mlx(t_player *player, t_map *map);
-int				key_hook(int keycode, t_env *e);
+int				key_press_hook(int keycode, t_env *e);
+int				key_release_hook(int keycode, t_env *e);
+
 int				expose_hook(t_env *e);
 
 t_list			*read_file(char	*filepath);
