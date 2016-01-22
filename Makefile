@@ -5,6 +5,8 @@ SRCS = map.c \
 	   player.c \
 	   coord.c \
 	   raycast.c \
+	   raydraw.c \
+	   raysprite.c \
 	   setup_mlx.c \
 	   draw.c \
 	   texture.c \

@@ -204,5 +204,9 @@ void			key_release(t_keyboard *key, int keycode);
 void			key_up_down(t_env *e);
 void			key_left_right(t_env *e);
 
+void			draw_ray(t_raycast *rc, int x, t_env *e);
+void			ray_sprite(t_env *e, t_raysprite *rs);
+void			draw_sprite(t_env *e, t_raycast *rc, t_raysprite *rs);
+
 void			render(t_env *e);
 #endif
