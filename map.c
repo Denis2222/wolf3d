@@ -25,6 +25,7 @@ t_map	*map_parse(t_list *list)
 {
 	t_map	*map;
 	char	**tab;
+	t_list	*l;
 	int		x;
 	int		y;
 
@@ -40,8 +41,13 @@ t_map	*map_parse(t_list *list)
 			map->x = ft_tablen(tab);
 			map->wall[y] = (int*)malloc(sizeof(int) * map->x);
 			while (++x < map->x)
+			{
 				map->wall[y][x] = atoi_free(tab[x]);
-			list = list->next;
+			}
+			free(tab);
+			l = list;
+			free(list);
+			list = l->next;
 			y++;
 		}
 	}
