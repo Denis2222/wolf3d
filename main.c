@@ -18,7 +18,7 @@ int	main(void)
 	t_list		*list;
 	t_player	*player;
 
-	list = read_file("./map/nano.w3d");
+	list = read_file("./map/lvl1.w3d");
 	map = map_parse(ft_lstrev(list));
 	map_print(map);
 	player = newplayer(2, 2);
