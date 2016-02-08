@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 15:10:55 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/21 14:04:34 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/22 14:45:20 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ t_map	*map_parse(t_list *list)
 {
 	t_map	*map;
 	char	**tab;
-	t_list	*l;
 	int		x;
 	int		y;
 
@@ -41,13 +40,8 @@ t_map	*map_parse(t_list *list)
 			map->x = ft_tablen(tab);
 			map->wall[y] = (int*)malloc(sizeof(int) * map->x);
 			while (++x < map->x)
-			{
 				map->wall[y][x] = atoi_free(tab[x]);
-			}
-			free(tab);
-			l = list;
-			free(list);
-			list = l->next;
+			list = list->next;
 			y++;
 		}
 	}

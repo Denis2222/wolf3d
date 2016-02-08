@@ -6,30 +6,34 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 22:54:49 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/21 19:20:33 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/22 16:02:27 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
 
-void	draw_hud(t_env *e)
+void	draw_gun(t_env *e)
 {
 	int	x;
 	int	y;
 
-	e->hud[0].c++;
-	e->hud[0].c = e->hud[0].c % e->hud[0].nb;
+	if (e->hud[0].c >= 3)
+		e->hud[0].c = 0;
 	x = e->hud[0].camx;
 	while (x < e->hud[0].w + e->hud[0].camx)
 	{
 		y = e->hud[0].camy;
-		while ( y < e->hud[0].h + e->hud[0].camy)
+		while (y < e->hud[0].h + e->hud[0].camy)
 		{
-			draw_dot(e, x, y, getcolor(e->spr[3], x - e->hud[0].camx + e->hud[0].c * e->hud[0].w, y - e->hud[0].camy, 0));
+			draw_dot(e, x + 50, y, getcolor(e->spr[3],
+				x - e->hud[0].camx + e->hud[0].c * e->hud[0].w,
+				y - e->hud[0].camy, 0));
 			y++;
 		}
 		x++;
 	}
+	if (e->hud[0].c > 0)
+		e->hud[0].c++;
 }
 
 int		get_loop_hook(t_env *e)
@@ -68,7 +72,7 @@ void	render(t_env *e)
 	e->imgpx = mlx_get_data_addr(e->img,
 	&(e->bpp), &(e->size_line), &(e->endian));
 	raycast(e);
-	//draw_hud(e);
+	draw_gun(e);
 	mlx_put_image_to_window(e->mlx, e->win, e->img, 0, 0);
 	mlx_destroy_image(e->mlx, e->img);
 }

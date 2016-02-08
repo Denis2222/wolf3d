@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/18 15:02:25 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/21 19:20:30 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/22 15:55:12 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,14 @@
 # define WIDTH 640
 # define HEIGHT 480
 
-# define NBSPRITE 7
+# define NBSPRITE 15
 
 # define KEY_ESC 53
 # define KEY_UP 126
 # define KEY_DOWN 125
 # define KEY_LEFT 123
 # define KEY_RIGHT 124
+# define KEY_SPACEBAR 49
 
 # define MOVESPEED 0.1
 # define ROTSPEED 0.1
@@ -102,10 +103,10 @@ typedef struct	s_env
 	int			endian;
 	t_map		*map;
 	t_player	*player;
-	t_img		*wall[8];
+	t_img		*wall[10];
 	t_img		*spr[8];
 	t_hud		hud[8];
-	t_sprite	sprite[8];
+	t_sprite	sprite[NBSPRITE];
 	t_keyboard	key;
 }				t_env;
 

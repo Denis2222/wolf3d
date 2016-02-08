@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/07 16:41:03 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/07 16:41:06 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/21 14:13:29 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_list	*ft_lstrev(t_list *lst)
 {
-	t_list *out;
+	t_list	*out;
 
 	out = NULL;
 	while (lst)

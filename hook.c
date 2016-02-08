@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 15:58:49 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/21 16:00:14 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/22 15:20:43 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ int		key_press_hook(int keycode, t_env *e)
 	key_press(&e->key, keycode);
 	if (keycode == KEY_ESC)
 		exit(EXIT_SUCCESS);
+	if (keycode == KEY_SPACEBAR)
+		e->hud[0].c++;
 	return (0);
 }
 

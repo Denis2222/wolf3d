@@ -22,7 +22,6 @@ CC = gcc $(GCC_FLAG)
 OBJS = $(SRCS:.c=.o)
 
 all: libft minilibx $(NAME)
-	./wolf3d
 
 libft:
 	make -C ./libft/
@@ -37,10 +36,10 @@ $(NAME): $(OBJS)
 	$(CC) -o $@ $^ -Lminilibx/ -lmlx -framework OPENGL -framework Appkit -Llibft -lft
 
 clean:
-	rm -f $(NAME)
 	rm -f $(OBJS)
 
 fclean: clean
+	rm -f $(NAME)
 	make -C libft/ fclean
 	make -C minilibx/ clean
 

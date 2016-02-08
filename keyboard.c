@@ -6,7 +6,7 @@
 /*   By: dmoureu- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/21 13:52:36 by dmoureu-          #+#    #+#             */
-/*   Updated: 2016/01/21 19:20:20 by dmoureu-         ###   ########.fr       */
+/*   Updated: 2016/01/22 16:18:27 by dmoureu-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,15 @@ void	key_press(t_keyboard *key, int keycode)
 	if (keycode == KEY_DOWN)
 		key->down = 1;
 	if (keycode == KEY_LEFT)
+	{
+		key->right = 0;
 		key->left = 1;
+	}
 	if (keycode == KEY_RIGHT)
+	{
+		key->left = 0;
 		key->right = 1;
+	}
 }
 
 void	key_release(t_keyboard *key, int keycode)
